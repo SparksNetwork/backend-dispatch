@@ -3,6 +3,7 @@ import {when, compose, equals, keys, prop, merge, type, identity} from 'ramda'
 import {pushMetric} from './metrics'
 import {test} from "./test/test";
 import {error, debug} from "./log";
+import {QueueMessage} from "./";
 
 /**
  * If the given argument is an object with a single property called 'key'
@@ -225,7 +226,18 @@ test(__filename, 'createResponder', async function (t) {
 /**
  * Process the firebase queue and turn messages there into seneca tasks.
  */
-export function queue(ref:Firebase, seneca) {
+export function Queue(ref:firebase.database.Reference, callback:(message:QueueMessage) => Promise<any>) {
+  return new FirebaseQueue(ref, {sanitize: false}, function(data, progress, resolve, reject) {
+    callback(data)
+      .then(() => {
+        resolve();
+      })
+      .catch(() => {
+        reject();
+      })
+  });
+
+
   const responsesRef = ref.child('responses')
   const metricsRef = ref.child('metrics')
 

@@ -9,11 +9,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "firebase-queue": "^1.5.0"
+    "assert": "^1.4.1",
+    "bluebird": "^3.4.6",
+    "firebase-queue": "^1.5.0",
+    "inflection": "^1.10.0",
+    "ramda": "^0.22.1",
+    "tape-async": "^2.1.1"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
     "tape-async": "^2.1.1",
+    "tslint": "^3.15.1",
     "typescript": "^2.0.3",
     "typings": "^1.4.0"
   }
