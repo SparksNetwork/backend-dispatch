@@ -13,9 +13,19 @@ interface FirebaseQueueMessage {
   uid:string;
 }
 
+/**
+ * Start a firebase queue process listening to the queue and making a callback
+ * with each message. The callback must return a promise that when resolves
+ * removes the queue entry and if rejects puts the queue entry into an error
+ * state.
+ *
+ * @param ref
+ * @param callback
+ * @returns {FirebaseQueue}
+ */
 export function Queue(ref:firebase.database.Reference, callback:(message:QueueMessage) => Promise<any>) {
   return new FirebaseQueue(ref, {sanitize: false}, function(data:FirebaseQueueMessage, progress, resolve, reject) {
-    ((_)=>(_))(progress);
+    ((_)=>(_))(progress); // Stupid not used message
 
     const message:QueueMessage = {
       domain: data.domain,

@@ -7,7 +7,7 @@ try {
 import * as firebase from 'firebase';
 import {startMetrics, pushMetric} from 'firebase-metrics';
 import {Queue} from './queue';
-import {Auth} from './auth';
+import {Auth} from './auth/auth';
 import {Responder, rejectMessage, acceptMessage} from './respond';
 import {Dispatcher} from './dispatch';
 import {Ref, QueueMessage} from './types';
@@ -21,6 +21,11 @@ firebase.initializeApp({
   }
 });
 
+/**
+ * @param queueRef Place where the queue lives
+ * @param responseRef Place to put responses
+ * @param metricsOut Place to store metrics
+ */
 function start(queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
   const metricsIn:Ref = queueRef.child('metrics');
   const count = tag => pushMetric(metricsIn, tag);

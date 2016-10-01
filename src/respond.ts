@@ -3,6 +3,13 @@ import {
   Ref
 } from './types';
 
+/**
+ * Create a function that pushes responses to the given location.
+ *
+ * @param ref
+ * @returns {(response:ResponseMessage)=>Promise<any>}
+ * @constructor
+ */
 export function Responder(ref: Ref) {
   return async function respond(response: ResponseMessage) {
     return await ref.child(response.key)
@@ -10,6 +17,11 @@ export function Responder(ref: Ref) {
   };
 }
 
+/**
+ * Construct a rejection message
+ * @param message
+ * @param authResponse
+ */
 export function rejectMessage(message: QueueMessage, authResponse: AuthResponse): ResponseMessage {
   return {
     key: message.key,
@@ -19,6 +31,12 @@ export function rejectMessage(message: QueueMessage, authResponse: AuthResponse)
   };
 }
 
+/**
+ * Construct an accepted message
+ *
+ * @param message
+ * @param dispatch
+ */
 export function acceptMessage(message: QueueMessage, dispatch: DispatchResponse): ResponseMessage {
   return {
     key: message.key,
