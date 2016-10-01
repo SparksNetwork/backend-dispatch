@@ -6,9 +6,7 @@ import {Message} from '../types';
 
 export type ObjectRule = (Object) => boolean
 
-export interface Accepted {};
-export interface Rejected {reject:string};
-export type AuthResponse = Accepted | Rejected;
+export type AuthResponse = {reject?:string;}
 
 type AuthFn = (this:Authorizer, uid:string, payload:any) => Promise<AuthResponse>;
 
