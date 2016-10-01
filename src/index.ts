@@ -1,3 +1,9 @@
+try {
+  require('source-map-support').install();
+} catch (err) {
+  console.log('Sourcemap support not installed');
+}
+
 import * as firebase from 'firebase';
 import {Queue} from './queue';
 import {Auth} from './auth';
@@ -5,41 +11,57 @@ import {Dispatch} from './dispatch';
 import {
   Ref, QueueMessage, ResponseMessage, AuthResponse,
   DispatchResponse
-} from "./types";
+} from './types';
+import {debug} from './log';
 
 firebase.initializeApp({
-
+  databaseURL: process.env['FIREBASE_DATABASE_URL'],
+  serviceAccount: './credentials.json',
+  databaseAuthVariableOverride: {
+    uid: 'firebase-queue'
+  }
 });
 
 function start(queueRef:Ref, responseRef:Ref) {
+  const auth = Auth();
+
   async function respond(response:ResponseMessage) {
     return await responseRef.child(response.key)
       .set(response);
   }
 
-  function rejectMessage(message:QueueMessage, authed:AuthResponse):ResponseMessage {
+  function rejectMessage(message:QueueMessage, authResponse:AuthResponse):ResponseMessage {
     return {
       key: message.key,
-      rejected: true
-    }
+      rejected: true,
+      message: authResponse.reject,
+      timestamp: Date.now()
+    };
   }
 
-  function acceptMessage(message:QueueMessage, authed:AuthResponse, dispatch:DispatchResponse):ResponseMessage {
+  function acceptMessage(message:QueueMessage, authResponse:AuthResponse, dispatch:DispatchResponse):ResponseMessage {
+    console.log(authResponse);
+    console.log(dispatch);
+
     return {
       key: message.key,
-      rejected: false
-    }
+      rejected: false,
+      timestamp: Date.now()
+    };
   }
 
-  Queue(firebase.database().ref('queue'), async function (message:QueueMessage) {
-    const authed = await Auth(message);
+  Queue(queueRef, async function (message:QueueMessage) {
+    debug('Processing message', message);
+    const authResponse = await auth.auth(message);
 
-    if (authed.reject) {
-      return await respond(rejectMessage(message, authed));
+    if (authResponse.reject) {
+      debug('Rejected message', message, authResponse);
+      return await respond(rejectMessage(message, authResponse));
     }
 
+    debug('Dispatching', message);
     const dispatch = await Dispatch(message);
-    return await respond(acceptMessage(message, authed, dispatch));
+    return await respond(acceptMessage(message, authResponse, dispatch));
   });
 }
 

@@ -1,128 +1,84 @@
-import * as Inflection from 'inflection'
-import * as BPromise from 'bluebird'
+import * as firebase from 'firebase';
+import * as Inflection from 'inflection';
+import * as BPromise from 'bluebird';
 import {
-  T, always, applySpec, complement, compose, cond, equals, filter, fromPairs,
-  head, keys, lensPath, map, mapObjIndexed, objOf, prop, propEq, tail, type,
-  values, view, toPairs, not, merge
-} from 'ramda'
+  applySpec, complement, compose, filter, fromPairs, head, keys, lensPath, map,
+  mapObjIndexed, objOf, prop, propEq, tail, type, values, view, toPairs, not,
+  merge
+} from 'ramda';
 import {test} from './test';
-import {Test} from "tape-async";
+import {Test} from 'tape-async';
 
 type SpecValue = string | number | boolean | Array<string>
 
 interface ByChildSpec {
-  [propName:string]: SpecValue
+  [propName:string]: SpecValue;
 }
 
 interface Spec {
-  [propName:string]: SpecValue | ByChildSpec
+  [propName:string]: SpecValue | ByChildSpec;
 }
 
 interface FulfilledSpec {
-  [propName:string]: null | any
+  [propName:string]: null | any;
 }
 
 interface FirebaseRecord {
-  $key:string
-  [key:string]:any
+  $key:string;
+  [key:string]:any;
 }
 
-const byValue = {
-  by: compose<Object, Object, any, Array<string>, string>(head, keys, prop('value')),
-  value: compose<Object, Object, Array<any>, any>(head, values, prop('value')),
-};
-
-declare type PairObject<T> = {[name:string]:T}
-declare type Pair<T> = [string, T]
+type PairObject<T> = {[name:string]:T}
+type Pair<T> = [string, T]
 /**
  * Given an object with a single property return a pair of property and value.
  * @type {(x0:PairObject<any>)=>Array<Array<any>>}
  */
 const pair:<T>(object:PairObject<T>) => Pair<T> =
-  compose<PairObject<any>, Array<Array<any>>, Pair<any>>(head, toPairs)
+  compose<PairObject<any>, Array<Array<any>>, Pair<any>>(head, toPairs);
 
 function getDependsOn(value) {
-  const t = type(value)
+  const t = type(value);
 
   if (t === 'Object') {
-    return getDependsOn(head(values(value)))
+    return getDependsOn(head(values(value)));
   }
 
   if (t === 'Array') {
-    return head(value)
+    return head(value);
   }
 
-  return null
+  return null;
 }
 test(__filename, 'getDependsOn', async function(t:Test) {
-  t.equal(getDependsOn('whatever'), null, 'strings return null')
-  t.equal(getDependsOn([3,2,1]), 3, 'arrays return head')
-  t.equal(getDependsOn({value: 'whatever'}), null, 'object returns value of first value')
-  t.equal(getDependsOn({value: [4,5,6]}), 4, 'object array returns head')
-  t.equal(getDependsOn({value: {value: {value: [6,7,8]}}}), 6, 'it goes deep')
-})
+  t.equal(getDependsOn('whatever'), null, 'strings return null');
+  t.equal(getDependsOn([3,2,1]), 3, 'arrays return head');
+  t.equal(getDependsOn({value: 'whatever'}), null, 'object returns value of first value');
+  t.equal(getDependsOn({value: [4,5,6]}), 4, 'object array returns head');
+  t.equal(getDependsOn({value: {value: {value: [6,7,8]}}}), 6, 'it goes deep');
+});
 
 function resolveDependentValue(value:any, record:Object) {
   if (type(value) === 'Object') {
     const bv = pair(value);
-    return objOf(bv[0], resolveDependentValue(bv[1], record))
+    return objOf(bv[0], resolveDependentValue(bv[1], record));
   }
 
-  const lens = lensPath(tail<string>(value))
-  return view(lens, record)
+  const lens = lensPath(tail<string>(value));
+  return view(lens, record);
 }
 
-/**
- * Constructs seneca command
- *
- * @type {Function}
- */
-const cmdArgs = cond([
-  [
-    compose(equals('String'), type, prop('value')),
-    always({cmd: always('get'), key: prop('value')}),
-  ],
-  [
-    prop('isArray'),
-    always(merge({
-      cmd: always('by')
-    }, byValue)),
-  ],
-  [T,
-    always(merge({
-      cmd: always('first'),
-    }, byValue))
-  ],
-])
-test(__filename, 'cmdArgs', async function(t) {
-  const valueIsString = {value: 'string'}
-  const valueIsArray = {isArray: true}
-  const objIsString = 'string'
-
-  const cmdIsString = cmdArgs(valueIsString)
-  t.equals(cmdIsString.cmd(), 'get', 'cmd is get')
-  t.equals(cmdIsString.key({value: 'something'}), 'something', 'key from value prop')
-
-  const cmdIsArray = cmdArgs(valueIsArray)
-  t.equals(cmdIsArray.cmd(), 'by', 'cmd is by')
-  t.equals(cmdIsArray.value({value: {value: 'something'}}), 'something', 'value from first property value')
-
-  const cmdObjIsString = cmdArgs(objIsString)
-  t.equals(cmdObjIsString.cmd(), 'first', 'cmd is first')
-  t.equals(cmdObjIsString.value({value: {value: 'something'}}), 'something', 'value from first property value')
-})
-
-function snapshotValue(snapshot):FirebaseRecord {
-  return Object.assign({$key: snapshot.key}, snapshot.val())
+function snapshotValue(snapshot): FirebaseRecord {
+  return Object.assign({$key: snapshot.key}, snapshot.val());
 }
 
-function objToRows(obj:any):FirebaseRecord[] {
-  return obj && keys(obj).map(key => merge(obj[key], {$key: key})) || []
+function objToRows(obj:any): FirebaseRecord[] {
+  return obj && keys(obj).map(key => merge(obj[key], {$key: key})) || [];
 }
 
 function createPromise(spec) {
   const value = spec.value;
-  if (not(spec.value)) { return Promise.resolve(null) }
+  if (not(value)) { return Promise.resolve(null); }
 
   const ref = firebase.database().ref()
     .child(spec.model);
@@ -152,16 +108,16 @@ function createPromise(spec) {
 }
 
 function createDependentPromises(spec, specs) {
-  const dependentSpecs = compose(filter(propEq('dependsOn', spec.key)), values)(specs)
+  const dependentSpecs = compose(filter(propEq('dependsOn', spec.key)), values)(specs);
 
   dependentSpecs.forEach(ds => {
     ds.promise = spec.promise.then(r => {
-      const value = resolveDependentValue(ds.value, r)
-      return createPromise(merge(ds, {value}))
-    })
+      const value = resolveDependentValue(ds.value, r);
+      return createPromise(merge(ds, {value}));
+    });
 
-    createDependentPromises(ds, specs)
-  })
+    createDependentPromises(ds, specs);
+  });
 }
 
 /**
@@ -191,13 +147,13 @@ export default function get(stuff:Spec):Promise<FulfilledSpec> {
     const model = compose(
       Inflection.pluralize,
       Inflection.camelize
-    )(key)
+    )(key);
 
     const isArray = type(value) !== 'String' &&
-      key === Inflection.pluralize(key)
+      key === Inflection.pluralize(key);
 
-    const dependsOn = getDependsOn(value)
-    const isDeferred = Boolean(dependsOn)
+    const dependsOn = getDependsOn(value);
+    const isDeferred = Boolean(dependsOn);
 
     return {
       key,
@@ -206,8 +162,8 @@ export default function get(stuff:Spec):Promise<FulfilledSpec> {
       isDeferred,
       dependsOn,
       value,
-    }
-  })(stuff)
+    };
+  })(stuff);
 
   const specsWithNoDependencies = compose(
     filter(complement(prop('dependsOn'))),
@@ -216,7 +172,7 @@ export default function get(stuff:Spec):Promise<FulfilledSpec> {
 
   specsWithNoDependencies.forEach(spec => {
     spec.promise = createPromise(spec);
-    createDependentPromises(spec, specs)
+    createDependentPromises(spec, specs);
   });
 
   const promises = compose(
@@ -226,6 +182,7 @@ export default function get(stuff:Spec):Promise<FulfilledSpec> {
     values,
   )(specs);
 
-  return BPromise.props(promises) as Promise<FulfilledSpec>
+  const promise = BPromise.props(promises);
+  return Promise.resolve(promise) as Promise<FulfilledSpec>;
 }
 
