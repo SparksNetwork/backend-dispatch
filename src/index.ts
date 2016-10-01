@@ -7,7 +7,7 @@ try {
 import * as firebase from 'firebase';
 import {startMetrics, pushMetric} from 'firebase-metrics';
 import {Queue} from './queue';
-import {Auth} from './auth/auth';
+import {Auth} from './auth';
 import {Responder, rejectMessage, acceptMessage} from './respond';
 import {Dispatcher} from './dispatch';
 import {Ref, QueueMessage} from './types';
