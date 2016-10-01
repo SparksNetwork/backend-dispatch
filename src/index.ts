@@ -5,6 +5,7 @@ try {
 }
 
 import * as firebase from 'firebase';
+import {startMetrics, pushMetric} from 'firebase-metrics';
 import {Queue} from './queue';
 import {Auth} from './auth';
 import {Responder, rejectMessage, acceptMessage} from './respond';
@@ -20,7 +21,10 @@ firebase.initializeApp({
   }
 });
 
-function start(queueRef:Ref, responseRef:Ref) {
+function start(queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
+  const metricsIn:Ref = queueRef.child('metrics');
+  const count = tag => pushMetric(metricsIn, tag);
+
   const auth = Auth();
   const dispatch = Dispatcher(process.env['KINESIS_STREAM']);
   const respond = Responder(responseRef);
@@ -28,21 +32,35 @@ function start(queueRef:Ref, responseRef:Ref) {
   info('Starting queue');
 
   Queue(queueRef, async function (message:QueueMessage) {
-    debug('Processing message', message);
+    debug('Incoming', message);
+    count('queue-incoming');
+
     const authResponse = await auth.auth(message);
 
     if (authResponse.reject) {
+      await respond(rejectMessage(message, authResponse));
       debug('Rejected message', message, authResponse);
-      return await respond(rejectMessage(message, authResponse));
+      count('queue-rejected');
+      return true;
     }
 
-    debug('Dispatching', message);
     const dispatchResponse = await dispatch(message);
-    return await respond(acceptMessage(message, dispatchResponse));
+    debug('Dispatched', dispatchResponse);
+    count('queue-dispatched');
+
+    await respond(acceptMessage(message, dispatchResponse));
+    debug('Responded');
+    count('queue-responded');
+
+    return true;
   });
+
+  info('Starting metrics');
+  startMetrics(metricsIn, metricsOut);
 }
 
 start(
   firebase.database().ref().child('!queue'),
-  firebase.database().ref().child('!queue').child('responses')
+  firebase.database().ref().child('!queue').child('responses'),
+  firebase.database().ref().child('metrics')
 );
