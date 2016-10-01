@@ -20,6 +20,17 @@ At the return stage the user (well software) only knows that we accepted the mes
 * auth.ts: Auth, checks a whole bunch of shit
 * dispatch.ts: Out, adds the message to kinesis
 
+## Environment:
+
+The following variables are required:
+
+```
+FIREBASE_DATABASE_URL: the database url
+KINESIS_STREAM: name of kinesis stream
+```
+
+## Running
+
 To run it you need a firebase and a firebase credentials.json file:
 
 ```

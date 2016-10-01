@@ -45,7 +45,8 @@ function start(queueRef:Ref, responseRef:Ref) {
 
     return {
       key: message.key,
-      rejected: false,
+      rejected: !dispatch.ok,
+      message: dispatch.error ? dispatch.error : '',
       timestamp: Date.now()
     };
   }

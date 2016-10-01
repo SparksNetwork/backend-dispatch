@@ -18,7 +18,9 @@ declare interface AuthResponse {
 }
 
 declare interface DispatchResponse {
-
+  response:any;
+  ok:boolean;
+  error?:any;
 }
 
 declare interface ResponseMessage {

@@ -3,3 +3,4 @@
 /// <reference path="globals/node/index.d.ts" />
 /// <reference path="modules/bluebird/index.d.ts" />
 /// <reference path="modules/ramda/index.d.ts" />
+/// <reference path="aws-sdk.d.ts" />

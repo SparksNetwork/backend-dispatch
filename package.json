@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "assert": "^1.4.1",
+    "aws-sdk": "^2.6.6",
     "bluebird": "^3.4.6",
     "firebase-queue": "^1.5.0",
     "inflection": "^1.10.0",
