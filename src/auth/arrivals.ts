@@ -12,7 +12,7 @@ export function arrivals(auth:AuthImpl) {
   });
 
   ['update', 'remove'].forEach(action => {
-    auth.addAuthRule({domain: 'Arrvials', action}, async function (this:AuthImpl, uid, {key}) {
+    auth.addAuthRule({domain: 'Arrivals', action}, async function (this:AuthImpl, uid, {key}) {
       const {arrival} = await get({arrival: key});
       const projectKey = arrival.projectKey;
       return await this.auth({
