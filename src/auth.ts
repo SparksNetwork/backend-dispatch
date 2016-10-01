@@ -3,14 +3,20 @@ import {
   all, allPass, anyPass, apply, compose, contains, equals, juxt, map, path,
   pathOr, prop, propOr, merge,
 } from 'ramda';
-import get from './get';
 import {AuthResponse, Message} from './types';
 import * as firebase from 'firebase';
+import {get} from 'firebase-get';
+
+type ObjectRule = (Object) => boolean
+type AuthFn = (this:Authorizer, uid:string, payload:any) => Promise<any>;
+
+interface Authorizer {
+  addAuthRule(domainAction:{domain:string, action:string}, authFn:AuthFn):void;
+  auth(msg:Message):Promise<AuthResponse>;
+}
 
 export const isAdmin = propOr(false, 'isAdmin');
 export const isEAP = propOr(false, 'isEAP');
-
-type ObjectRule = (Object) => boolean
 
 // Rules
 const profileIsAdmin = pathOr<boolean>(false, ['profile', 'isAdmin']);
@@ -92,15 +98,6 @@ function pass(ruleFn: ObjectRule, rejectionMsg: string, respond) {
   }
 }
 
-const domains = {};
-
-type AuthFn = (this:Authorizer, uid:string, payload:any) => Promise<any>;
-
-interface Authorizer {
-  addAuthRule(domainAction:{domain:string, action:string}, authFn:AuthFn):void;
-  auth(msg:Message):Promise<AuthResponse>;
-}
-
 class AuthImpl implements Authorizer {
   private domains;
 
@@ -109,11 +106,11 @@ class AuthImpl implements Authorizer {
   }
 
   addAuthRule({domain, action}, authFn: AuthFn) {
-    (domains[domain] || (domains[domain] = {}))[action] = authFn;
+    (this.domains[domain] || (this.domains[domain] = {}))[action] = authFn;
   }
 
   async auth(msg: Message): Promise<AuthResponse> {
-    const domain = domains[msg.domain];
+    const domain = this.domains[msg.domain];
     if (!domain) {
       return {reject: 'Unauthorized'};
     }
@@ -182,7 +179,7 @@ auth.addAuthRule({domain: 'ProjectImages', action: 'set'}, async function (uid, 
 
 // Teams
 auth.addAuthRule({action: 'remove', domain: 'Teams'}, async function (uid, {key}) {
-  const {team} = await get({team: key});
+  const {team} = await get({team: key}) as any;
   assert(team, `Team ${key} not found`);
 
   return await this.auth({
@@ -265,7 +262,7 @@ auth.addAuthRule({domain: 'Opps', action: 'create'}, async function (uid, {value
 // Shifts
 ['update', 'remove'].forEach(action => {
   auth.addAuthRule({domain: 'Shifts', action}, async function (uid, {key}) {
-    const {shift} = await get({shift: key});
+    const {shift} = await get({shift: key}) as any;
     return await this.auth({
       domain: 'Teams',
       action: 'update',
@@ -474,9 +471,6 @@ auth.addAuthRule({ domain: 'Users', action: 'migrate' }, async function (uid, {f
     .once('value').then(s => s.val());
   const newProfileKey = await firebase.database().ref().child('Users').child(toUid)
     .once('value').then(s => s.val());
-
-  console.log('='.repeat(30));
-  console.log(newProfileKey);
 
   assert(profile, 'Profile not found');
   assert(oldProfileKey, 'Old user not found');

@@ -9,21 +9,23 @@ function partitionKey(message) {
   ].join('');
 }
 
-export async function Dispatch(message:QueueMessage):Promise<DispatchResponse> {
-  try {
-    const params = {
-      Data: new Buffer(JSON.stringify(message)),
-      PartitionKey: partitionKey(message),
-      StreamName: process.env['KINESIS_STREAM']
-    };
+export function Dispatcher(streamName:string) {
+  return async function dispatch(message: QueueMessage): Promise<DispatchResponse> {
+    try {
+      const params = {
+        Data: new Buffer(JSON.stringify(message)),
+        PartitionKey: partitionKey(message),
+        StreamName: streamName
+      };
 
-    const response = await kinesis.putRecord(params).promise();
-    return {response, ok: true};
-  } catch (error) {
-    return {
-      ok: false,
-      response: null,
-      error
-    };
-  }
+      const response = await kinesis.putRecord(params).promise();
+      return {response, ok: true};
+    } catch (error) {
+      return {
+        ok: false,
+        response: null,
+        error
+      };
+    }
+  };
 }

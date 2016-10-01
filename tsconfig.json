@@ -12,7 +12,7 @@
     "noImplicitThis": false,
     "noImplicitReturns": true,
     "noUnusedParameters": true,
-    "noUnusedLocals": true,
+    //"noUnusedLocals": true,
     "preserveConstEnums": true,
     "pretty": true,
     "removeComments": false,

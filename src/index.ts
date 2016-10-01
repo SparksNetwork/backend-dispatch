@@ -7,12 +7,10 @@ try {
 import * as firebase from 'firebase';
 import {Queue} from './queue';
 import {Auth} from './auth';
-import {Dispatch} from './dispatch';
-import {
-  Ref, QueueMessage, ResponseMessage, AuthResponse,
-  DispatchResponse
-} from './types';
-import {debug} from './log';
+import {Responder, rejectMessage, acceptMessage} from './respond';
+import {Dispatcher} from './dispatch';
+import {Ref, QueueMessage} from './types';
+import {debug, info} from './log';
 
 firebase.initializeApp({
   databaseURL: process.env['FIREBASE_DATABASE_URL'],
@@ -24,32 +22,10 @@ firebase.initializeApp({
 
 function start(queueRef:Ref, responseRef:Ref) {
   const auth = Auth();
+  const dispatch = Dispatcher(process.env['KINESIS_STREAM']);
+  const respond = Responder(responseRef);
 
-  async function respond(response:ResponseMessage) {
-    return await responseRef.child(response.key)
-      .set(response);
-  }
-
-  function rejectMessage(message:QueueMessage, authResponse:AuthResponse):ResponseMessage {
-    return {
-      key: message.key,
-      rejected: true,
-      message: authResponse.reject,
-      timestamp: Date.now()
-    };
-  }
-
-  function acceptMessage(message:QueueMessage, authResponse:AuthResponse, dispatch:DispatchResponse):ResponseMessage {
-    console.log(authResponse);
-    console.log(dispatch);
-
-    return {
-      key: message.key,
-      rejected: !dispatch.ok,
-      message: dispatch.error ? dispatch.error : '',
-      timestamp: Date.now()
-    };
-  }
+  info('Starting queue');
 
   Queue(queueRef, async function (message:QueueMessage) {
     debug('Processing message', message);
@@ -61,8 +37,8 @@ function start(queueRef:Ref, responseRef:Ref) {
     }
 
     debug('Dispatching', message);
-    const dispatch = await Dispatch(message);
-    return await respond(acceptMessage(message, authResponse, dispatch));
+    const dispatchResponse = await dispatch(message);
+    return await respond(acceptMessage(message, dispatchResponse));
   });
 }
 
