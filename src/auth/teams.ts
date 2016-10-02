@@ -1,6 +1,6 @@
 import {get} from "firebase-get";
 import {anyPass} from 'ramda';
-import {ObjectRule, profileIsObjectOwner} from './auth';
+import {ObjectRule, profileIsObjectOwner, pass} from './auth';
 import {updateProjectRules} from './projects';
 
 const profileIsTeamOwner: ObjectRule = profileIsObjectOwner('team');

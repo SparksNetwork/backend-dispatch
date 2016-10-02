@@ -1,7 +1,10 @@
 import {QueueMessage, DispatchResponse} from './types';
 import * as aws from 'aws-sdk';
 
-const kinesis = new aws.Kinesis();
+const kinesisOptions = {
+  endpoint: process.env['KINESIS_ENDPOINT']
+};
+const kinesis = new aws.Kinesis(kinesisOptions);
 
 function partitionKey(message) {
   return [
