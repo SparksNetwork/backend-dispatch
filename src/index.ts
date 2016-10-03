@@ -1,7 +1,7 @@
 try {
   require('source-map-support').install();
 } catch (err) {
-  console.log('Sourcemap support not installed');
+  console.log('source map support not installed');
 }
 
 import * as firebase from 'firebase';
@@ -26,12 +26,12 @@ firebase.initializeApp({
  * @param responseRef Place to put responses
  * @param metricsOut Place to store metrics
  */
-function start(queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
+async function start(queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
   const metricsIn:Ref = queueRef.child('metrics');
   const count = tag => pushMetric(metricsIn, tag);
 
   const auth = Auth();
-  const dispatch = Dispatcher(process.env['KINESIS_STREAM']);
+  const dispatch = await Dispatcher(process.env['KINESIS_STREAM']);
   const respond = Responder(responseRef);
 
   info('Starting queue');

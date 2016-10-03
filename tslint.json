@@ -22,9 +22,6 @@
       "check-else",
       "check-whitespace",
       "check-open-brace"],
-    "quotemark": [true,
-      "single",
-      "avoid-escape"],
     "semicolon": [true],
     "typedef-whitespace": [true, {
       "call-signature": "nospace",
