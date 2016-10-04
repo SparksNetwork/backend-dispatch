@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ajv": "^4.7.6",
     "assert": "^1.4.1",
     "aws-sdk": "^2.6.6",
     "firebase-get": "github:jemmyw/firebase-get",
@@ -16,6 +17,7 @@
     "firebase-queue": "^1.5.0",
     "ramda": "^0.22.1",
     "source-map-support": "^0.4.3",
+    "sparks-schemas": "github:sparksnetwork/schemas",
     "tape-async": "^2.1.1"
   },
   "devDependencies": {

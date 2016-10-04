@@ -1,3 +1,4 @@
+import {validate} from "./validate";
 try {
   require('source-map-support').install();
 } catch (err) {
@@ -39,6 +40,14 @@ async function start(queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
   Queue(queueRef, async function (message:QueueMessage) {
     debug('Incoming', message);
     count('queue-incoming');
+
+    const validMessage = await validate(message);
+
+    if (!validMessage) {
+      debug('Invalid message', message);
+      count('queue-invalid');
+      return true;
+    }
 
     const authResponse = await auth.auth(message);
 
