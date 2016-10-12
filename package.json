@@ -4,7 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test": "tsc && find dist -iname '*.js' | NODE_ENV=test xargs -n1 node | tap-merge",
+    "watch": "fswatch -0 -Ei \".*\\.ts$\" -Ee \".*\\.ts\" src | NODE_ENV=test xargs -0 -n1 -I {} bash -c \"clear && ts-node {} | tap-min\""
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +14,7 @@
     "ajv": "^4.7.6",
     "assert": "^1.4.1",
     "aws-sdk": "^2.6.6",
+    "firebase": "^3.4.1",
     "firebase-get": "github:jemmyw/firebase-get",
     "firebase-metrics": "^1.0.1",
     "firebase-queue": "^1.5.0",
@@ -22,7 +25,11 @@
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
+    "sinon": "^1.17.6",
+    "tap-merge": "^0.3.1",
+    "tap-min": "^1.1.0",
     "tape-async": "^2.1.1",
+    "ts-node": "^1.4.3",
     "tslint": "^3.15.1",
     "typescript": "^2.0.3",
     "typings": "^1.4.0"
