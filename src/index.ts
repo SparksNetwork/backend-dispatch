@@ -13,14 +13,7 @@ import {Responder, rejectMessage, acceptMessage} from './respond';
 import {Dispatcher} from './dispatch';
 import {Ref, QueueMessage} from './types';
 import {debug, info} from './log';
-
-firebase.initializeApp({
-  databaseURL: process.env['FIREBASE_DATABASE_URL'],
-  serviceAccount: './credentials.json',
-  databaseAuthVariableOverride: {
-    uid: 'firebase-queue'
-  }
-});
+import {isMain, isTest} from "./test";
 
 /**
  * @param queueRef Place where the queue lives
@@ -73,8 +66,18 @@ async function start(queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
   startMetrics(metricsIn, metricsOut);
 }
 
-start(
-  firebase.database().ref().child('!queue'),
-  firebase.database().ref().child('!queue').child('responses'),
-  firebase.database().ref().child('metrics')
-);
+if (!isTest()) {
+  firebase.initializeApp({
+    databaseURL: process.env['FIREBASE_DATABASE_URL'],
+    serviceAccount: './credentials.json',
+    databaseAuthVariableOverride: {
+      uid: 'firebase-queue'
+    }
+  });
+
+  start(
+    firebase.database().ref().child('!queue'),
+    firebase.database().ref().child('!queue').child('responses'),
+    firebase.database().ref().child('metrics')
+  );
+}
