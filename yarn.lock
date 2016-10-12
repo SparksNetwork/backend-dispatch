@@ -104,12 +104,6 @@ assert-plus@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-1.0.0.tgz#f12e0f3c5d77b0b1cdd9146942e4e96c1e4dd525"
 
-assert@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/assert/-/assert-1.4.1.tgz#99912d591836b5a6f5b345c0f07eefc08fc65d91"
-  dependencies:
-    util "0.10.3"
-
 async-each@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/async-each/-/async-each-1.0.1.tgz#19d386a1d9edc6e7c1c85d388aedbcc56d33602d"
@@ -290,8 +284,8 @@ babel-types@^6.16.0:
     to-fast-properties "^1.0.1"
 
 babylon@^6.11.0:
-  version "6.11.4"
-  resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.11.4.tgz#75e1f52187efa0cde5a541a7f7fdda38f6eb5bd2"
+  version "6.11.5"
+  resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.11.5.tgz#35cce8fb5f98353931d275cb56871fbf17bf9a00"
 
 balanced-match@^0.4.1:
   version "0.4.2"
@@ -2142,7 +2136,7 @@ signal-exit@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.1.tgz#5a4c884992b63a7acd9badb7894c3ee9cfccad81"
 
-sinon:
+sinon@^1.17.6:
   version "1.17.6"
   resolved "https://registry.yarnpkg.com/sinon/-/sinon-1.17.6.tgz#a43116db59577c8296356afee13fafc2332e58e1"
   dependencies:
@@ -2182,8 +2176,8 @@ source-map@^0.5.0, source-map@^0.5.3:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.6.tgz#75ce38f52bf0733c5a7f0c118d81334a2bb5f412"
 
 "sparks-schemas@github:sparksnetwork/schemas":
-  version "0.0.1"
-  resolved "https://codeload.github.com/sparksnetwork/schemas/tar.gz/772132dddbf776f8e7af731a28cb9f49a5fd9cbe"
+  version "0.0.2"
+  resolved "https://codeload.github.com/sparksnetwork/schemas/tar.gz/647628d1a9907928f848197eb449f8392049eae3"
 
 spdx-correct@~1.0.0:
   version "1.0.2"
@@ -2290,13 +2284,13 @@ supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
 
-tap-merge:
+tap-merge@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/tap-merge/-/tap-merge-0.3.1.tgz#1fbbda1b09e02dbd7ddd8cd4edf8b9bad1184a91"
   dependencies:
     highland "^2.5.1"
 
-tap-min:
+tap-min@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/tap-min/-/tap-min-1.1.0.tgz#94db0721b868531580a552cbf26d5ae4a9e5ef32"
   dependencies:
@@ -2315,9 +2309,9 @@ tap-parser@^0.7.0:
     minimist "^0.2.0"
     readable-stream "~1.1.11"
 
-tape-async:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/tape-async/-/tape-async-2.1.1.tgz#d5c28a1a6c524b18d03771ee3f88691c5a5eec42"
+tape-async@^2.1.1:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/tape-async/-/tape-async-2.2.0.tgz#76770f91da31fd30f9eea0114dccf4934d178a72"
   dependencies:
     co "^4.6.0"
     is-generator "^1.0.2"
@@ -2411,7 +2405,7 @@ trim-newlines@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/trim-newlines/-/trim-newlines-1.0.0.tgz#5887966bb582a4503a41eb524f7d35011815a613"
 
-ts-node:
+ts-node@^1.4.3:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-1.4.3.tgz#d96399b6257d6ab0f0c61487e23c6713594666be"
   dependencies:
@@ -2571,7 +2565,7 @@ util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
-"util@>=0.10.3 <1", util@0.10.3:
+"util@>=0.10.3 <1":
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/util/-/util-0.10.3.tgz#7afb1afe50805246489e3db7fe0ed379336ac0f9"
   dependencies:

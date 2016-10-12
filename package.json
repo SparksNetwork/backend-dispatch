@@ -12,7 +12,6 @@
   "license": "ISC",
   "dependencies": {
     "ajv": "^4.7.6",
-    "assert": "^1.4.1",
     "aws-sdk": "^2.6.6",
     "firebase": "^3.4.1",
     "firebase-get": "github:jemmyw/firebase-get",
