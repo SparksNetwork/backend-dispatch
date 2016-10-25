@@ -69,11 +69,7 @@ async function start(queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
 if (!isTest()) {
   firebase.initializeApp({
     databaseURL: process.env['FIREBASE_DATABASE_URL'],
-    serviceAccount: {
-      projectId: process.env["FIREBASE_PROJECT_ID"],
-      clientEmail: process.env["FIREBASE_CLIENT_EMAIL"],
-      privateKey: process.env["FIREBASE_PRIVATE_KEY"].replace(/\\n/g, "\n")
-    },
+    serviceAccount: './credentials.json',
     databaseAuthVariableOverride: {
       uid: 'firebase-queue'
     }
