@@ -67,13 +67,29 @@ async function start(queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
 }
 
 if (!isTest()) {
-  firebase.initializeApp({
-    databaseURL: process.env['FIREBASE_DATABASE_URL'],
-    serviceAccount: './credentials.json',
-    databaseAuthVariableOverride: {
-      uid: 'firebase-queue'
-    }
-  });
+  if(process.env['CREDENTIALS']) {
+    const credentials = JSON.parse(new Buffer(process.env['CREDENTIALS'], 'base64') as any);
+
+    firebase.initializeApp({
+      databaseURL: process.env['FIREBASE_DATABASE_URL'],
+      serviceAccount: {
+        projectId: credentials['project_id'],
+        clientEmail: credentials['client_email'],
+        privateKey: credentials['private_key']
+      },
+      databaseAuthVariableOverride: {
+        uid: 'firebase-queue'
+      }
+    });
+  } else {
+    firebase.initializeApp({
+      databaseURL: process.env['FIREBASE_DATABASE_URL'],
+      serviceAccount: './credentials.json',
+      databaseAuthVariableOverride: {
+        uid: 'firebase-queue'
+      }
+    });
+  }
 
   start(
     firebase.database().ref().child('!queue'),
