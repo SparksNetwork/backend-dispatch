@@ -8,7 +8,7 @@ WORKDIR /app
 
 ADD package.json .
 ADD yarn.lock .
-RUN sh -c "yarn || cat yarn-error.log && false"
+RUN npm install
 ADD . .
 RUN node_modules/.bin/tsc
 
