@@ -1,6 +1,6 @@
 FROM alpine:3.4
 
-RUN apk add --update nodejs
+RUN apk add --update nodejs git
 RUN npm install -g yarn
 
 RUN mkdir /app
