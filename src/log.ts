@@ -1,37 +1,29 @@
-import {test} from "./test";
-const lawgs = require('lawgs');
-let logger:any = console;
+import * as winston from 'winston';
+import * as util from 'util';
 
 if (process.env['CLOUDWATCH_LOG_GROUP']) {
-  logger = lawgs.getOrCreate(process.env['CLOUDWATCH_LOG_GROUP']);
+  const cw = require('winston-cloudwatch');
+  winston.add(cw, {
+    logGroupName: process.env['CLOUDWATCH_LOG_GROUP'],
+    logStreamName: Date.now().toString(),
+    awsRegion: process.env['AWS_REGION'],
+    level: 'debug'
+  });
 }
 
-export function info(...msgs:any[]) {
-  logger.info('[INFO]', ...msgs);
+function log(level:'info'|'debug'|'error', ...msg:any[]) {
+  const output:string = msg.map(m => util.format(m)).join(' ');
+  winston.log(level, output, () => {});
 }
-test(__filename, 'info', async function(t) {
-  const spy = require('sinon').spy(logger, 'info');
-  info('test', 'it');
-  t.deepEqual(spy.firstCall.args, ['[INFO]', 'test', 'it']);
-  spy.restore();
-});
 
-export function error(...msgs:any[]) {
-  logger.error('[ERROR]', ...msgs);
+export function info(...msg:any[]) {
+  log('info', ...msg);
 }
-test(__filename, 'error', async function(t) {
-  const spy = require('sinon').spy(logger, 'error');
-  error('test', 'it');
-  t.deepEqual(logger.error.firstCall.args, ['[ERROR]', 'test', 'it']);
-  spy.restore();
-});
 
-export function debug(...msgs:any[]) {
-  logger.info('[DEBUG]', ...msgs);
+export function debug(...msg:any[]) {
+  log('debug', ...msg);
 }
-test(__filename, 'debug', async function(t) {
-  const spy = require('sinon').spy(logger, 'info');
-  debug('test', 'it');
-  t.deepEqual(logger.info.firstCall.args, ['[DEBUG]', 'test', 'it']);
-  spy.restore();
-});
+
+export function error(...msg:any[]) {
+  log('error', ...msg);
+}
