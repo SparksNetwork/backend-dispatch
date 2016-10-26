@@ -1,4 +1,5 @@
-import {get} from 'firebase-get';
+import Get from 'firebase-get';
+const get = Get();
 
 export function users(auth) {
   auth.addAuthRule({

@@ -1,8 +1,9 @@
-import {get} from "firebase-get";
+import Get from 'firebase-get';
 import {anyPass} from 'ramda';
 import {ObjectRule, profileIsObjectOwner, pass} from './auth';
 import {updateProjectRules} from './projects';
 
+const get = Get();
 const profileIsTeamOwner: ObjectRule = profileIsObjectOwner('team');
 const updateTeamRules: ObjectRule = anyPass([profileIsTeamOwner, updateProjectRules]);
 

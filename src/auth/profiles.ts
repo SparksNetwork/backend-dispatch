@@ -1,5 +1,6 @@
-import {get} from 'firebase-get';
+import Get from 'firebase-get';
 import {AuthResponse} from './auth';
+const get = Get();
 
 export function profiles(auth) {
   auth.addAuthRule({domain: 'Profiles', action: 'update'}, async function (uid, {key}):Promise<AuthResponse> {

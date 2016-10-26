@@ -1,7 +1,8 @@
-import {get} from 'firebase-get';
+import Get from 'firebase-get';
 import {pass, ObjectRule, profileIsObjectOwner} from './auth';
 import {anyPass} from 'ramda';
 import {updateProjectRules} from './projects';
+const get = Get();
 
 const profileIsOppOwner: ObjectRule = profileIsObjectOwner('opp');
 const updateOppRules: ObjectRule = anyPass([profileIsOppOwner, updateProjectRules]);

@@ -1,5 +1,6 @@
 import {AuthImpl, AuthResponse} from './auth';
-import {get} from 'firebase-get';
+import Get from 'firebase-get';
+const get = Get();
 
 export function engagements(auth: AuthImpl) {
   auth.addAuthRule({

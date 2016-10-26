@@ -1,6 +1,8 @@
-import {get} from 'firebase-get';
+import Get from 'firebase-get';
 import {prop} from 'ramda';
 import {pass} from './auth';
+
+const get = Get();
 
 export function organizers(auth) {
   ['update', 'remove'].forEach(action => {

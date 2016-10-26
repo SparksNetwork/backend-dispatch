@@ -1,5 +1,6 @@
 import {AuthImpl} from './auth';
-import {get} from 'firebase-get';
+import Get from 'firebase-get';
+const get = Get();
 
 export function arrivals(auth:AuthImpl) {
   auth.addAuthRule({domain:'Arrivals', action: 'create'}, async function(this:AuthImpl, uid, {projectKey}) {
