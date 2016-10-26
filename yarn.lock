@@ -116,6 +116,19 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
+aws-sdk@^2.1.8:
+  version "2.6.12"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.6.12.tgz#37f192502888bb5c01a2819eebc766ebeaf4e418"
+  dependencies:
+    buffer "4.9.1"
+    crypto-browserify "1.0.9"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.1.5"
+    url "0.10.3"
+    xml2js "0.4.15"
+    xmlbuilder "2.6.2"
+
 aws-sdk@^2.6.6:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.6.7.tgz#d14930dbab17841c26ceb278ad08415adeff195f"
@@ -743,6 +756,10 @@ expand-range@^1.8.1:
   resolved "https://registry.yarnpkg.com/expand-range/-/expand-range-1.8.2.tgz#a299effd335fe2721ebae8e257ec79644fc85337"
   dependencies:
     fill-range "^2.1.0"
+
+extend@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/extend/-/extend-2.0.1.tgz#1ee8010689e7395ff9448241c98652bc759a8260"
 
 extend@~3.0.0, extend@3:
   version "3.0.0"
@@ -1439,9 +1456,23 @@ latest-version@^2.0.0:
   dependencies:
     package-json "^2.0.0"
 
+lawgs:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/lawgs/-/lawgs-1.0.2.tgz#64fe355bc345b9f4c66a0acbf17525b42f8951e1"
+  dependencies:
+    aws-sdk "^2.1.8"
+    extend "^2.0.0"
+    linq "^3.0.4-beta"
+    q "^1.1.2"
+    rx "^2.3.24"
+
 lazy-req@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/lazy-req/-/lazy-req-1.1.0.tgz#bdaebead30f8d824039ce0ce149d4daa07ba1fac"
+
+linq@^3.0.4-beta:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/linq/-/linq-3.0.5.tgz#509c83b4e025aaebcb3fd7e833d5ea5c501f210c"
 
 listify@^1.0.0:
   version "1.0.0"
@@ -1876,6 +1907,10 @@ punycode@1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.3.2.tgz#9653a036fb7c1ee42342f2325cceefea3926c48d"
 
+q@^1.1.2:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/q/-/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
+
 qs@~6.2.0:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.2.1.tgz#ce03c5ff0935bc1d9d69a9f14cbd18e568d67625"
@@ -2075,6 +2110,10 @@ rsvp@^3.2.1:
 rsvp@3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-3.2.1.tgz#07cb4a5df25add9e826ebc67dcc9fd89db27d84a"
+
+rx@^2.3.24:
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/rx/-/rx-2.5.3.tgz#21adc7d80f02002af50dae97fd9dbf248755f566"
 
 samsam@~1.1:
   version "1.1.3"

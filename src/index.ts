@@ -13,7 +13,7 @@ import {Responder, rejectMessage, acceptMessage} from './respond';
 import {Dispatcher} from './dispatch';
 import {Ref, QueueMessage} from './types';
 import {debug, info} from './log';
-import {isMain, isTest} from "./test";
+import {isTest} from "./test";
 
 /**
  * @param queueRef Place where the queue lives
