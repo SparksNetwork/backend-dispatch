@@ -9,7 +9,10 @@ import * as firebase from 'firebase';
 import {startMetrics, pushMetric} from 'firebase-metrics';
 import {Queue} from './queue';
 import {Auth} from './auth';
-import {Responder, rejectMessage, acceptMessage} from './respond';
+import {
+  Responder, rejectMessage, acceptMessage,
+  invalidMessage
+} from './respond';
 import {Dispatcher} from './dispatch';
 import {Ref, QueueMessage} from './types';
 import {debug, info} from './log';
@@ -36,11 +39,14 @@ async function start(queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
 
     const validMessage = await validate(message);
 
-    if (!validMessage) {
+    if (!validMessage.valid) {
+      await respond(invalidMessage(message, validMessage.message));
       debug('Invalid message', message);
+      debug(validMessage.errors);
       count('queue-invalid');
       return true;
     }
+
     debug('Message validated');
 
     const authResponse = await auth.auth(message);

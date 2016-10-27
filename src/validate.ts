@@ -11,6 +11,7 @@ const commandValidator = ajv.getSchema('Command');
 export interface Validation {
   valid:boolean;
   errors:any | undefined;
+  message: string;
 }
 
 export async function validate(message:QueueMessage):Promise<Validation> {
@@ -23,14 +24,15 @@ export async function validate(message:QueueMessage):Promise<Validation> {
     return {
       valid: false,
       errors: commandValidator.errors,
-      validating: messageWithoutKey
+      message: ajv.errorsText(commandValidator.errors)
     };
   }
 
   if (!payloadValidator) {
     return {
       valid: false,
-      errors: ['No schema found']
+      errors: ['No schema found'],
+      message: 'No schema found'
     };
   }
 
@@ -38,11 +40,11 @@ export async function validate(message:QueueMessage):Promise<Validation> {
     return {
       valid: false,
       errors: payloadValidator.errors,
-      validating: messageWithoutKey.payload
+      message: ajv.errorsText(payloadValidator.errors)
     };
   }
 
-  return {valid: true, errors: []};
+  return {valid: true, errors: [], message: ''};
 }
 test(__filename, 'validate command', async function(t:Test) {
   ajv.addSchema({

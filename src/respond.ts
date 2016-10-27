@@ -31,6 +31,15 @@ export function rejectMessage(message: QueueMessage, authResponse: AuthResponse)
   };
 }
 
+export function invalidMessage(message: QueueMessage, error:string): ResponseMessage {
+  return {
+    key: message.key,
+    rejected: true,
+    message: error,
+    timestamp: Date.now()
+  };
+}
+
 /**
  * Construct an accepted message
  *
