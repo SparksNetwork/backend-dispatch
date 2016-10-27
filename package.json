@@ -2,9 +2,9 @@
   "name": "sparks-dispatch",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "tsc": "node_modules/.bin/tsc",
     "test": "npm run tsc && find dist -iname '*.js' | NODE_ENV=test xargs -n1 node | tap-merge",
     "watch": "fswatch -0 -Ei \".*\\.ts$\" -Ee \".*\\.ts\" src | NODE_ENV=test xargs -0 -n1 -I {} bash -c \"clear && ts-node {} | tap-min\"",

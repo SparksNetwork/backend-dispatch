@@ -1,4 +1,6 @@
 /// <reference path="aws-sdk.d.ts" />
+/// <reference path="tape-async.d.ts" />
+/// <reference path="firebase-queue.d.ts" />
 /// <reference path="globals/assert/index.d.ts" />
 /// <reference path="globals/inflection/index.d.ts" />
 /// <reference path="globals/node/index.d.ts" />

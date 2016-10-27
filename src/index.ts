@@ -41,6 +41,7 @@ async function start(queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
       count('queue-invalid');
       return true;
     }
+    debug('Message validated');
 
     const authResponse = await auth.auth(message);
 
@@ -50,6 +51,7 @@ async function start(queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
       count('queue-rejected');
       return true;
     }
+    debug('Message authorized');
 
     const dispatchResponse = await dispatch(message);
     debug('Dispatched', dispatchResponse);

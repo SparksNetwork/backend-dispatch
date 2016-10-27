@@ -1,76 +1,50 @@
-import * as Ajv from 'ajv';
 import {omit} from 'ramda';
 import {QueueMessage} from "./types";
 import {test} from "./test";
 import {Test} from "tape-async";
 import * as util from 'util';
+import {Ajv} from 'sparks-schemas';
 
-const ajv = new Ajv({
-  loadSchema
-});
-const command = ajv.compile(require('sparks-schemas/schemas/command.json'));
+const ajv = Ajv();
+const commandValidator = ajv.getSchema('Command');
 
 export interface Validation {
   valid:boolean;
   errors:any | undefined;
 }
 
-function loadSchema(uri:string, callback:(err:Error|null, schema?:any) => void) {
-  try {
-    const schema = require(`sparks-schemas/schemas/${uri}`);
-    callback(null, schema);
-  } catch(err) {
-    callback(err);
-  }
-}
-
-async function addSchema(message:QueueMessage) {
-  try {
-    const commandFile = require(`sparks-schemas/schemas/commands/${message.domain}.json`);
-    const schemaData = commandFile[message.action];
-
-    if (schemaData) {
-      return await new Promise((resolve, reject) => {
-        ajv.compileAsync(schemaData, (err, validate) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(validate);
-        });
-      });
-    } else {
-      return null;
-    }
-  } catch(err) {
-    return null;
-  }
-}
-
-async function getSchema(message:QueueMessage) {
-  const schemaName = `${message.domain}.${message.action}`;
-  return ajv.getSchema(schemaName) || await addSchema(message);
-}
-
 export async function validate(message:QueueMessage):Promise<Validation> {
   const messageWithoutKey = omit(['key'], message);
-  const commandValid = await command(messageWithoutKey);
-  if (!commandValid) { return { valid: false, errors: command.errors }; }
+  const {domain, action} = messageWithoutKey;
 
-  const schema = await getSchema(message);
+  const payloadValidator = ajv.getSchema([domain, action].join('.'));
 
-  if (schema) {
-    const valid = await schema(message.payload || null);
-    return {valid, errors: schema.errors};
-  } else {
-    return {valid: false, errors: ["No schema found"]};
+  if (!commandValidator(messageWithoutKey)) {
+    return {
+      valid: false,
+      errors: commandValidator.errors,
+      validating: messageWithoutKey
+    };
   }
+
+  if (!payloadValidator) {
+    return {
+      valid: false,
+      errors: ['No schema found']
+    };
+  }
+
+  if (!payloadValidator(messageWithoutKey.payload)) {
+    return {
+      valid: false,
+      errors: payloadValidator.errors,
+      validating: messageWithoutKey.payload
+    };
+  }
+
+  return {valid: true, errors: []};
 }
-
 test(__filename, 'validate command', async function(t:Test) {
-  ajv.addSchema({
-    type: "null",
-  }, 'anything.anything');
-
   ajv.addSchema({
     type: "object",
     properties: {
@@ -79,7 +53,6 @@ test(__filename, 'validate command', async function(t:Test) {
   }, 'somethingElse.something');
 
   const validCommands = [
-    {uid: 'abc', domain: 'anything', action: 'anything'},
     {uid: 'abc', domain: 'somethingElse', action: 'something', payload: {key: 'test'}}
   ];
   const invalidCommands = [
@@ -94,12 +67,15 @@ test(__filename, 'validate command', async function(t:Test) {
 
   for (let command of validCommands) {
     const valid = await validate(command as any);
-    t.ok(valid.valid, `${util.inspect(command)} is valid`);
+    t.deepEqual(valid, {
+      valid: true,
+      errors: []
+    }, `${util.inspect(command)} should be valid`);
   }
 
   for (let command of invalidCommands) {
     const valid = await validate(command as any);
-    t.notOk(valid.valid, `${util.inspect(command)} is invalid`);
+    t.notOk(valid.valid, `${util.inspect(command)} should be invalid`);
   }
 });
 
@@ -130,12 +106,12 @@ test(__filename, 'validate payload', async function(t:Test) {
   }, "Domains.remove");
 
   const validPayloads = [
+    {uid:'abc', domain:'Domains', action: 'create', payload: {values: {name: 1}}},
     {uid:'abc', domain:'Domains', action: 'create', payload: {values: {name: "moose"}}},
     {uid:'abc', domain:'Domains', action: 'remove', payload: {key: 'abc'}}
   ];
 
   const invalidPayloads = [
-    {uid:'abc', domain:'Domains', action: 'create', payload: {values: {name: 1}}},
     {uid:'abc', domain:'Domains', action: 'create', payload: {values: 'moose'}},
     {uid:'abc', domain:'Domains', action: 'create', payload: {dancing: 'moose'}},
     {uid:'abc', domain:'Domains', action: 'remove', payload: {}}
@@ -143,11 +119,14 @@ test(__filename, 'validate payload', async function(t:Test) {
 
   for (let command of validPayloads) {
     const valid = await validate(command as any);
-    t.ok(valid.valid, `${util.inspect(command.payload)} is valid`);
+    t.deepEqual(valid, {
+      valid: true,
+      errors: []
+    }, `${util.inspect(command.payload)} should be valid`);
   }
 
   for (let command of invalidPayloads) {
     const valid = await validate(command as any);
-    t.notOk(valid.valid, `${util.inspect(command.payload)} is invalid`);
+    t.notOk(valid.valid, `${util.inspect(command.payload)} should be invalid`);
   }
 });
