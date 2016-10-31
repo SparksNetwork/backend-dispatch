@@ -1,14 +1,12 @@
 FROM alpine:3.4
 
 RUN apk add --update nodejs git
-RUN npm install -g yarn
 
 RUN mkdir /app
 WORKDIR /app
 
 ADD package.json .
-ADD yarn.lock .
-RUN npm install
+RUN apk add python g++ make && npm install && apk del python g++ make
 ADD . .
 RUN node_modules/.bin/tsc
 
