@@ -18,7 +18,6 @@ declare interface AuthResponse {
 }
 
 declare interface DispatchResponse {
-  response:any;
   ok:boolean;
   error?:any;
 }
@@ -28,4 +27,12 @@ declare interface ResponseMessage {
   rejected:boolean;
   message?:string;
   timestamp:number;
+}
+
+declare interface Dispatch {
+  (message: QueueMessage): Promise<DispatchResponse>;
+}
+
+declare interface Dispatcher {
+  (streamName:string, options?:any): Promise<Dispatch>;
 }

@@ -13,22 +13,23 @@ import {
   Responder, rejectMessage, acceptMessage,
   invalidMessage
 } from './respond';
-import {Dispatcher} from './dispatch';
-import {Ref, QueueMessage} from './types';
+import kafkaDispatcher from './dispatch/kafka-dispatch';
+import {Ref, QueueMessage, Dispatch} from './types';
 import {debug, info} from './log';
 import {isTest} from "./test";
 
 /**
+ * @param dispatcher
  * @param queueRef Place where the queue lives
  * @param responseRef Place to put responses
  * @param metricsOut Place to store metrics
  */
-async function start(queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
+async function start(dispatcher:Promise<Dispatch>, queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
   const metricsIn:Ref = queueRef.child('metrics');
   const count = tag => pushMetric(metricsIn, tag);
 
   const auth = Auth();
-  const dispatch = await Dispatcher(process.env['KINESIS_STREAM']);
+  const dispatch = await dispatcher;
   const respond = Responder(responseRef);
 
   info('Starting queue');
@@ -99,7 +100,14 @@ if (!isTest()) {
     });
   }
 
+  // const dispatcher = kinesisDispatcher(process.env['KINESIS_STREAM']);
+
+  const dispatcher = kafkaDispatcher(process.env['KINESIS_STREAM'], {
+    connectionString: process.env['KAFKA_CONNECTION']
+  });
+
   start(
+    dispatcher,
     firebase.database().ref().child('!queue'),
     firebase.database().ref().child('!queue').child('responses'),
     firebase.database().ref().child('metrics')

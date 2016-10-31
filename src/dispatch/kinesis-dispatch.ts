@@ -1,7 +1,7 @@
-import {QueueMessage, DispatchResponse} from './types';
+import {QueueMessage, DispatchResponse, Dispatcher, Dispatch} from '../types';
 import * as aws from 'aws-sdk';
 import * as https from 'https';
-import {test} from "./test";
+import {test} from "../test";
 
 const agent = new https.Agent({
   rejectUnauthorized: false
@@ -103,7 +103,7 @@ test(__filename, 'createStream', async function(t) {
   );
 });
 
-function makeDispatcher(streamName:string) {
+function makeDispatcher(streamName:string):Dispatch {
   return async function dispatch(message: QueueMessage): Promise<DispatchResponse> {
     try {
       const params = {
@@ -183,7 +183,9 @@ test(__filename, 'makeDispatcher', {
   }
 });
 
-export async function Dispatcher(streamName: string) {
+const dispatcher:Dispatcher = async function(streamName: string) {
   await createStream(streamName, 1);
   return makeDispatcher(streamName);
-}
+};
+
+export default dispatcher;

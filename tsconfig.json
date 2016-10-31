@@ -11,7 +11,7 @@
     "noImplicitAny": false,
     "noImplicitThis": false,
     "noImplicitReturns": true,
-    "noUnusedParameters": true,
+    //"noUnusedParameters": true,
     //"noUnusedLocals": true,
     "preserveConstEnums": true,
     "pretty": true,
