@@ -8,7 +8,8 @@
     "tsc": "node_modules/.bin/tsc",
     "test": "npm run tsc && find dist -iname '*.js' | NODE_ENV=test xargs -n1 node | tap-merge",
     "watch": "fswatch -0 -Ei \".*\\.ts$\" -Ee \".*\\.ts\" src | NODE_ENV=test xargs -0 -n1 -I {} bash -c \"clear && ts-node {} | tap-min\"",
-    "build": "eval $(aws ecr get-login --region=us-west-2) && V=v$(git rev-parse --short HEAD); docker build -t 878160042194.dkr.ecr.us-west-2.amazonaws.com/dispatch:${V} .; docker push 878160042194.dkr.ecr.us-west-2.amazonaws.com/dispatch:${V}"
+    "build": "eval $(aws ecr get-login --region=us-west-2) && V=v$(git rev-parse --short HEAD); docker build -t 878160042194.dkr.ecr.us-west-2.amazonaws.com/dispatch:${V} .; docker push 878160042194.dkr.ecr.us-west-2.amazonaws.com/dispatch:${V}",
+    "deploy": "node bin/ecs_deploy.js dispatch dispatch 878160042194.dkr.ecr.us-west-2.amazonaws.com/dispatch"
   },
   "author": "",
   "license": "ISC",
@@ -29,6 +30,7 @@
     "winston-cloudwatch": "^1.6.0"
   },
   "devDependencies": {
+    "async": "^2.1.2",
     "babel-cli": "^6.16.0",
     "sinon": "^1.17.6",
     "tap-merge": "^0.3.1",

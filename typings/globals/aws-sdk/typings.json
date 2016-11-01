@@ -1,0 +1,10 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/jemmyw/typed-aws-sdk/0ea0723/typings.json",
+    "raw": "github:jemmyw/typed-aws-sdk#0ea0723",
+    "main": "aws-sdk.d.ts",
+    "name": "aws-sdk",
+    "type": "typings"
+  }
+}
