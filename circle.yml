@@ -4,6 +4,10 @@ machine:
   services:
     - docker
 
+test:
+  pre:
+    - tsc
+
 deployment:
   production:
     branch: master
