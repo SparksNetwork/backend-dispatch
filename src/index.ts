@@ -35,6 +35,7 @@ async function start(dispatcher:Promise<Dispatch>, queueRef:Ref, responseRef:Ref
   info('Starting queue');
 
   Queue(queueRef, async function (message:QueueMessage) {
+    const start = Date.now();
     debug('Incoming', message);
     count('queue-incoming');
 
@@ -48,7 +49,7 @@ async function start(dispatcher:Promise<Dispatch>, queueRef:Ref, responseRef:Ref
       return true;
     }
 
-    debug('Message validated');
+    debug('Message validated', Date.now() - start);
 
     const authResponse = await auth.auth(message);
 
@@ -58,14 +59,14 @@ async function start(dispatcher:Promise<Dispatch>, queueRef:Ref, responseRef:Ref
       count('queue-rejected');
       return true;
     }
-    debug('Message authorized');
+    debug('Message authorized', Date.now() - start);
 
     const dispatchResponse = await dispatch(message);
-    debug('Dispatched', dispatchResponse);
+    debug('Dispatched', dispatchResponse, Date.now() - start);
     count('queue-dispatched');
 
     await respond(acceptMessage(message, dispatchResponse));
-    debug('Responded');
+    debug('Responded', Date.now() - start);
     count('queue-responded');
 
     return true;
