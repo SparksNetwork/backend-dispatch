@@ -18,8 +18,7 @@
     "removeComments": false,
     "sourceMap": true,
     "strictNullChecks": true,
-    "target": "ES6",
-    "outDir": "dist/"
+    "target": "ES6"
   },
   "formatCodeOptions": {
     "indentSize": 2,

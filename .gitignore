@@ -1,3 +1,4 @@
-dist/
 credentials.json
 .env
+*.js
+*.js.map

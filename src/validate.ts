@@ -71,6 +71,7 @@ test(__filename, 'validate command', async function(t:Test) {
     const valid = await validate(command as any);
     t.deepEqual(valid, {
       valid: true,
+      message: '',
       errors: []
     }, `${util.inspect(command)} should be valid`);
   }
@@ -123,6 +124,7 @@ test(__filename, 'validate payload', async function(t:Test) {
     const valid = await validate(command as any);
     t.deepEqual(valid, {
       valid: true,
+      message: '',
       errors: []
     }, `${util.inspect(command.payload)} should be valid`);
   }

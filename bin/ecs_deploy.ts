@@ -17,6 +17,7 @@ function exitUsage() {
 
 if (process.argv.slice(2).length < 3) { exitUsage(); }
 const [cluster, family, repositoryUrl] = process.argv.slice(2);
+console.log('Deploying new version of', family, 'to', cluster);
 
 function getVersion(cb: (error, version: string) => void) {
   exec('git rev-parse --short HEAD', function (error, stdout) {
