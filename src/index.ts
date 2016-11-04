@@ -101,11 +101,14 @@ if (!isTest()) {
     });
   }
 
-  // const dispatcher = kinesisDispatcher(process.env['KINESIS_STREAM']);
+  let connectionString = process.env['KAFKA_CONNECTION'];
 
-  const dispatcher = kafkaDispatcher(process.env['KINESIS_STREAM'], {
-    connectionString: process.env['KAFKA_CONNECTION']
-  });
+  // If there is a docker link then use that
+  if (process.env['KAFKA_PORT_9092_TCP_ADDR']) {
+    connectionString = process.env['KAFKA_PORT_9092_TCP_ADDR'] + ':9092';
+  }
+
+  const dispatcher = kafkaDispatcher(process.env['KINESIS_STREAM'], {connectionString});
 
   start(
     dispatcher,
