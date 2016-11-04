@@ -13,4 +13,5 @@ deployment:
     branch: master
     commands:
       - npm run build
+      - "echo \"878160042194.dkr.ecr.us-west-2.amazonaws.com/dispatch:`git rev-parse --short HEAD`\" > $CIRCLE_ARTIFACTS/image"
       - npm run deploy
