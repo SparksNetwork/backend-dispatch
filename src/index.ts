@@ -36,7 +36,7 @@ async function start(dispatcher:Promise<Dispatch>, queueRef:Ref, responseRef:Ref
 
   Queue(queueRef, async function (message:QueueMessage) {
     const start = Date.now();
-    debug('Incoming', message);
+    info('Incoming', message);
     count('queue-incoming');
 
     const validMessage = await validate(message);
@@ -88,18 +88,6 @@ if (!isTest()) {
         projectId: credentials['project_id'],
         clientEmail: credentials['client_email'],
         privateKey: credentials['private_key']
-      },
-      databaseAuthVariableOverride: {
-        uid: 'firebase-queue'
-      }
-    });
-  } else if (process.env['FIREBASE_PRIVATE_KEY']) {
-    firebase.initializeApp({
-      databaseURL: firebaseDatabaseUrl,
-      serviceAccount: {
-        projectId: process.env['FIREBASE_PROJECT_ID'],
-        clientEmail: process.env['FIREBASE_CLIENT_EMAIL'],
-        privateKey: process.env['FIREBASE_PRIVATE_KEY']
       },
       databaseAuthVariableOverride: {
         uid: 'firebase-queue'
