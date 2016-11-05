@@ -91,6 +91,18 @@ if (!isTest()) {
         uid: 'firebase-queue'
       }
     });
+  } else if (process.env['FIREBASE_PRIVATE_KEY']) {
+    firebase.initializeApp({
+      databaseURL: process.env['FIREBASE_DATABASE_URL'],
+      serviceAccount: {
+        projectId: process.env['FIREBASE_PROJECT_ID'],
+        clientEmail: process.env['FIREBASE_CLIENT_EMAIL'],
+        privateKey: process.env['FIREBASE_PRIVATE_KEY']
+      },
+      databaseAuthVariableOverride: {
+        uid: 'firebase-queue'
+      }
+    });
   } else {
     firebase.initializeApp({
       databaseURL: process.env['FIREBASE_DATABASE_URL'],
