@@ -95,8 +95,8 @@ if (!isTest()) {
     });
   } else {
     firebase.initializeApp({
-      databaseUrl: firebaseDatabaseUrl,
-      serviceAccount: './credentials.json',
+      databaseURL: firebaseDatabaseUrl,
+      serviceAccount: 'credentials.json',
       databaseAuthVariableOverride: {
         uid: 'firebase-queue'
       }
