@@ -77,11 +77,13 @@ async function start(dispatcher:Promise<Dispatch>, queueRef:Ref, responseRef:Ref
 }
 
 if (!isTest()) {
+  const firebaseDatabaseUrl = process.env['FIREBASE_DATABASE_URL'];
+
   if(process.env['CREDENTIALS']) {
     const credentials = JSON.parse(new Buffer(process.env['CREDENTIALS'], 'base64') as any);
 
     firebase.initializeApp({
-      databaseURL: process.env['FIREBASE_DATABASE_URL'],
+      databaseURL: firebaseDatabaseUrl,
       serviceAccount: {
         projectId: credentials['project_id'],
         clientEmail: credentials['client_email'],
@@ -93,7 +95,7 @@ if (!isTest()) {
     });
   } else if (process.env['FIREBASE_PRIVATE_KEY']) {
     firebase.initializeApp({
-      databaseURL: process.env['FIREBASE_DATABASE_URL'],
+      databaseURL: firebaseDatabaseUrl,
       serviceAccount: {
         projectId: process.env['FIREBASE_PROJECT_ID'],
         clientEmail: process.env['FIREBASE_CLIENT_EMAIL'],
@@ -105,7 +107,7 @@ if (!isTest()) {
     });
   } else {
     firebase.initializeApp({
-      databaseURL: process.env['FIREBASE_DATABASE_URL'],
+      databaseUrl: firebaseDatabaseUrl,
       serviceAccount: './credentials.json',
       databaseAuthVariableOverride: {
         uid: 'firebase-queue'
@@ -127,5 +129,9 @@ if (!isTest()) {
     firebase.database().ref().child('!queue'),
     firebase.database().ref().child('!queue').child('responses'),
     firebase.database().ref().child('metrics')
-  );
+  ).then(() => {
+    info('Started');
+    info('Firebase: ', firebaseDatabaseUrl);
+    info('Kafka: ', connectionString);
+  });
 }
