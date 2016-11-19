@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "ajv": "^4.7.6",
-    "aws-sdk": "^2.6.6",
+    "aws-sdk": "^2.7.5",
     "farmhash": "^1.2.1",
     "firebase": "^3.4.1",
     "firebase-get": "jemmyw/firebase-get",
@@ -30,6 +30,7 @@
     "winston-cloudwatch": "^1.6.0"
   },
   "devDependencies": {
+    "@types/node": "^6.0.48",
     "async": "^2.1.2",
     "babel-cli": "^6.16.0",
     "sinon": "^1.17.6",

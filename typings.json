@@ -3,7 +3,6 @@
     "async": "registry:npm/async#2.0.1+20160815105832"
   },
   "globalDependencies": {
-    "aws-sdk": "github:jemmyw/typed-aws-sdk#0ea0723",
     "winston": "registry:dt/winston#0.0.0+20161006194546"
   }
 }
