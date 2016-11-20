@@ -21,7 +21,7 @@
     "firebase-get": "jemmyw/firebase-get",
     "firebase-metrics": "^1.0.1",
     "firebase-queue": "^1.5.0",
-    "no-kafka": "^2.9.2",
+    "no-kafka": "^3.0.1",
     "ramda": "^0.22.1",
     "source-map-support": "^0.4.3",
     "sparks-schemas": "github:sparksnetwork/schemas",
