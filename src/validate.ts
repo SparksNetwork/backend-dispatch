@@ -3,7 +3,7 @@ import {QueueMessage} from "./types";
 import {test} from "./test";
 import {Test} from "tape-async";
 import * as util from 'util';
-import {Ajv} from 'sparks-schemas';
+import Ajv from '@sparksnetwork/sparks-schemas/lib/ajv';
 
 const ajv = Ajv();
 const commandValidator = ajv.getSchema('Command');

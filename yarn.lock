@@ -2,6 +2,14 @@
 # yarn lockfile v1
 
 
+"@sparksnetwork/sparks-schemas@^2.1.9":
+  version "2.1.9"
+  resolved "https://registry.yarnpkg.com/@sparksnetwork/sparks-schemas/-/sparks-schemas-2.1.9.tgz#9f1775dd4919f8bfe69330934d57f992768e53d0"
+  dependencies:
+    ajv "^4.7.7"
+    glob "^7.1.1"
+    inflection "^1.10.0"
+
 "@types/node@^6.0.48":
   version "6.0.48"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.48.tgz#86ccc15f66b73cbbc5eb3483398936c585122b3c"
@@ -2528,14 +2536,6 @@ source-map@~0.2.0:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.2.0.tgz#dab73fbcfc2ba819b4de03bd6f6eaa48164b3f9d"
   dependencies:
     amdefine ">=0.0.4"
-
-"sparks-schemas@github:sparksnetwork/schemas":
-  version "2.1.5"
-  resolved "https://codeload.github.com/sparksnetwork/schemas/tar.gz/3bca29da275b169134fa91d55f8d529c549e5fb2"
-  dependencies:
-    ajv "^4.7.7"
-    glob "^7.1.1"
-    inflection "^1.10.0"
 
 spdx-correct@~1.0.0:
   version "1.0.2"
