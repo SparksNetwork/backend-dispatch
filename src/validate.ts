@@ -81,7 +81,6 @@ test(__filename, 'validate command', async function(t:Test) {
     t.notOk(valid.valid, `${util.inspect(command)} should be invalid`);
   }
 });
-
 test(__filename, 'validate payload', async function(t:Test) {
   ajv.addSchema({
     type: "object",

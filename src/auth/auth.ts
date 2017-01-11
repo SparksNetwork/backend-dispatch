@@ -4,16 +4,18 @@ import {
 } from 'ramda';
 import {Message} from '../types';
 
+export interface AuthResponse {
+  reject?:string;
+}
 export type ObjectRule = (Object) => boolean
 
-export type AuthResponse = {reject?:string;}
-
-type AuthFn = (this:Authorizer, uid:string, payload:any) => Promise<AuthResponse>;
+export type AuthFn = (this:Authorizer, uid:string, payload:any) => Promise<AuthResponse>;
 
 export interface Authorizer {
   addAuthRule(domainAction:{domain:string, action:string}, authFn:AuthFn):void;
   auth(msg:Message):Promise<AuthResponse>;
 }
+
 
 export const isAdmin = propOr(false, 'isAdmin');
 export const isEAP = propOr(false, 'isEAP');

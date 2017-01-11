@@ -2,3 +2,4 @@ credentials.json
 .env
 *.js
 *.js.map
+lib/

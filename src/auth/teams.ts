@@ -1,6 +1,6 @@
 import Get from 'firebase-get';
 import {anyPass} from 'ramda';
-import {ObjectRule, profileIsObjectOwner, pass} from './auth';
+import {profileIsObjectOwner, pass, ObjectRule} from './auth';
 import {updateProjectRules} from './projects';
 
 const get = Get();

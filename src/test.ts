@@ -1,8 +1,8 @@
 import * as tape from 'tape-async';
 import {Test} from "tape-async";
 
-type TestFn = (t:Test) => Promise<any>
-type TestFnOrObj = TestFn | {
+export type TestFn = (t:Test) => Promise<any>
+export type TestFnOrObj = TestFn | {
   [key:string]:TestFn;
 };
 
@@ -31,5 +31,5 @@ export function isTest() {
 
 export function isMain(filename:string) {
   const mainModule = (process as any).mainModule;
-  return mainModule.filename === filename;
+  return mainModule && mainModule.filename === filename;
 }

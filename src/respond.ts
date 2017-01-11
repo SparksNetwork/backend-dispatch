@@ -1,7 +1,8 @@
 import {
-  ResponseMessage, QueueMessage, AuthResponse, DispatchResponse,
+  ResponseMessage, QueueMessage, DispatchResponse,
   Ref
 } from './types';
+import {AuthResponse} from "./auth/auth";
 
 /**
  * Create a function that pushes responses to the given location.

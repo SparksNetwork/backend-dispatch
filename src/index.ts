@@ -13,9 +13,10 @@ import {
   Responder, rejectMessage, acceptMessage,
   invalidMessage
 } from './respond';
-import kafkaDispatcher from './dispatch/kafka-dispatch';
 import {Ref, QueueMessage, Dispatch} from './types';
 import {debug, info} from './log';
+
+export * from './types';
 
 /**
  * @param dispatcher
@@ -23,7 +24,16 @@ import {debug, info} from './log';
  * @param responseRef Place to put responses
  * @param metricsOut Place to store metrics
  */
-async function start(dispatcher:Promise<Dispatch>, queueRef:Ref, responseRef:Ref, metricsOut:Ref) {
+export default async function start(dispatcher:Promise<Dispatch>,
+                                    queue:string = '!queue',
+                                    response:string = '!queue/responses',
+                                    metrics:string = 'metrics',
+                                    app = firebase
+) {
+  const queueRef:Ref = app.database().ref().child(queue);
+  const responseRef:Ref = app.database().ref(response);
+  const metricsOut:Ref = app.database().ref().child(metrics);
+
   const metricsIn:Ref = queueRef.child('metrics');
   const count = tag => pushMetric(metricsIn, tag);
 
@@ -75,48 +85,3 @@ async function start(dispatcher:Promise<Dispatch>, queueRef:Ref, responseRef:Ref
   startMetrics(metricsIn, metricsOut);
 }
 
-const firebaseDatabaseUrl = process.env['FIREBASE_DATABASE_URL'];
-
-if(process.env['CREDENTIALS']) {
-  const credentials = JSON.parse(new Buffer(process.env['CREDENTIALS'], 'base64') as any);
-
-  firebase.initializeApp({
-    databaseURL: firebaseDatabaseUrl,
-    serviceAccount: {
-      projectId: credentials['project_id'],
-      clientEmail: credentials['client_email'],
-      privateKey: credentials['private_key']
-    },
-    databaseAuthVariableOverride: {
-      uid: 'firebase-queue'
-    }
-  });
-} else {
-  firebase.initializeApp({
-    databaseURL: firebaseDatabaseUrl,
-    serviceAccount: 'credentials.json',
-    databaseAuthVariableOverride: {
-      uid: 'firebase-queue'
-    }
-  });
-}
-
-let connectionString = process.env['KAFKA_CONNECTION'];
-
-// If there is a docker link then use that
-if (process.env['KAFKA_PORT_9092_TCP_ADDR']) {
-  connectionString = process.env['KAFKA_PORT_9092_TCP_ADDR'] + ':9092';
-}
-
-const dispatcher = kafkaDispatcher(process.env['KINESIS_STREAM'], {connectionString});
-
-start(
-  dispatcher,
-  firebase.database().ref().child('!queue'),
-  firebase.database().ref().child('!queue').child('responses'),
-  firebase.database().ref().child('metrics')
-).then(() => {
-  info('Started');
-  info('Firebase: ', firebaseDatabaseUrl);
-  info('Kafka: ', connectionString);
-});

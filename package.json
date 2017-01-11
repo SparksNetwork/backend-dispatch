@@ -1,15 +1,20 @@
 {
-  "name": "sparks-dispatch",
-  "version": "1.0.0",
+  "name": "@sparksnetwork/sparks-dispatch",
+  "version": "1.0.12",
   "description": "",
-  "main": "src/index.js",
+  "main": "lib/src/index.js",
+  "types": "lib/src/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node lib/standalone.js",
     "tsc": "node_modules/.bin/tsc",
     "test": "npm run tsc && find src -iname '*.js' | NODE_ENV=test xargs -n1 node | tap-merge",
     "watch": "fswatch -0 -Ei \".*\\.ts$\" -Ee \".*\\.ts\" src | NODE_ENV=test xargs -0 -n1 -I {} bash -c \"clear && ts-node {} | tap-min\"",
     "build": "eval $(aws ecr get-login --region=us-west-2) && V=v$(git rev-parse --short HEAD); docker build -t 878160042194.dkr.ecr.us-west-2.amazonaws.com/dispatch:${V} .; docker push 878160042194.dkr.ecr.us-west-2.amazonaws.com/dispatch:${V}",
-    "deploy": "node bin/ecs_deploy.js dispatch dispatch 878160042194.dkr.ecr.us-west-2.amazonaws.com/dispatch"
+    "deploy": "node bin/ecs_deploy.js dispatch dispatch 878160042194.dkr.ecr.us-west-2.amazonaws.com/dispatch",
+    "prepublish": "rm -rf lib && tsc"
   },
   "author": "",
   "license": "ISC",

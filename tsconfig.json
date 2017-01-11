@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
-    "declaration": false,
+    "declaration": true,
     "lib": [
       "es2015"
     ],
+    "outDir": "lib/",
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmitHelpers": false,
@@ -11,8 +12,6 @@
     "noImplicitAny": false,
     "noImplicitThis": false,
     "noImplicitReturns": true,
-    //"noUnusedParameters": true,
-    //"noUnusedLocals": true,
     "preserveConstEnums": true,
     "pretty": true,
     "removeComments": false,
@@ -24,5 +23,6 @@
     "indentSize": 2,
     "tabSize": 2
   },
-  "compileOnSave": true
+  "compileOnSave": true,
+  "exclude": ["node_modules"]
 }
